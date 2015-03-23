@@ -1,0 +1,54 @@
+<!doctype html>
+<meta charset=utf-8>
+<title>Firth</title>
+<style>
+textarea, button {
+    display: block;
+}
+</style>
+
+<h1>Try Firth!</h1>
+
+<textarea id=firth-input cols=80 rows=24></textarea>
+
+<button id=firth-run>Run!</button>
+
+<textarea id=firth-tokens cols=80 rows=5 readonly></textarea>
+<textarea id=firth-ast cols=80 rows=5 readonly></textarea>
+
+<script>window.Firth = {};</script>
+<script src=src/lex.js></script>
+<script src=src/parse.js></script>
+<script src=src/executor.js></script>
+<script src=src/stdlib.js></script>
+<script src=src/utils.js></script>
+<script src=src/Stack.js></script>
+<script>
+window.onload = function () {
+    'use strict';
+
+    var get = document.getElementById.bind(document);
+
+    get('firth-run').onclick = function () {
+        try {
+            var tokens = Firth.lex(get('firth-input').value);
+        } catch (e) {
+            alert('Error when lexing: ' + e.message);
+        }
+        get('firth-tokens').value = tokens.map(function (token) { return JSON.stringify(token); }).join('\n');
+
+        try {
+            var ast = Firth.parse(tokens);
+        } catch (e) {
+            alert('Error when parsing: ' + e.message);
+        }
+        get('firth-ast').value = JSON.stringify(ast, null, 4);
+
+        try {
+            Firth.executor.execute(ast);
+        } catch (e) {
+            alert('Error when executing: ' + e.message);
+        }
+    };
+};
+</script>
