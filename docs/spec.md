@@ -29,6 +29,7 @@ A Firth program source file may contain any of the following tokens. Their forma
 
   The literal text of this token is interpreted as the decimal representation of an integer
   The value of this token (the integer value) is the aforementioned integer value the literal text represents
+* `/(true)|(false)/` - Boolean literal
 
 * `/'((\\')?.)*'/` - String literal
 
@@ -126,11 +127,6 @@ The variable scope stack is initially populated with Firth's basic types, functi
 
 See the types section above.
 
-###Constants
-
-* `true` - the boolean value true
-* `false` - the boolean value false
-
 ###Functions
 
 For the sake of conciseness and error-checking, full type signatures are given for Firth's basic/predefined functions.
@@ -188,3 +184,10 @@ Type signatures MUST be strictly enforced by the implementation. Passing a funct
 * `gteq` (`Int Int -> Bool`) - returns `true` if the first argument is greater than or equal to the second
 * `lt` (`Int Int -> Bool`) - returns `true` if the first argument is less than the second
 * `lteq` (`Int Int -> Bool`) - returns `true` if the first argument is less than or equal to the second
+
+####Boolean Algebra
+
+* `and` (`Bool Bool -> Bool`) - returns `true` if the two arguments are `true`
+* `or` (`Bool Bool -> Bool`) - returns `true` if at least one of the arguments is `true`
+* `xor` (`Bool Bool -> Bool`) - returns `true` if exactly one of the arguments is `true`
+* `not` (`Bool -> Bool`) - returns `true` if the argument is `false`

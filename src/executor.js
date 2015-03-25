@@ -18,6 +18,7 @@ window.Firth.executor = (function (Firth) {
         for (var i = 0; i < ast.length; i++) {
             var opcode = ast[i];
             switch (opcode.type) {
+                case 'boolean':
                 case 'integer':
                 case 'symbol':
                 case 'function':
@@ -45,10 +46,10 @@ window.Firth.executor = (function (Firth) {
         if (func.type === 'function') {
             _execute(func.body, stack, scope);
         } else if (typeof func === 'function') {
-           func(stack, scope); 
+           func(stack, scope);
         } else {
             throw new Error("Cannot invoke value of type " + func.type);
-        } 
+        }
     }
 
     return {
