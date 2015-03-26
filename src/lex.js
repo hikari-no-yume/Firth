@@ -12,7 +12,7 @@ window.Firth.lex = (function (Firth) {
         function isPunctuation(c) {
             return c === '.' || c === '[' || c === ']';
         }
-        
+
         function isIdentifierLead(c) {
             return c === '_' || ('a' <= c && c <= 'z');
         }
@@ -100,7 +100,7 @@ window.Firth.lex = (function (Firth) {
                     name: symbol
                 });
                 continue;
-            }       
+            }
 
             /* variable name */
             if (isIdentifierLead(c)) {
@@ -114,10 +114,17 @@ window.Firth.lex = (function (Firth) {
                         break;
                     }
                 }
-                tokens.push({
-                    type: 'variable',
-                    name: token
-                });
+                if (token === 'true' || token === 'false') {
+                    tokens.push({
+                        type: 'boolean',
+                        value: token === 'true'
+                    });
+                } else {
+                    tokens.push({
+                        type: 'variable',
+                        name: token
+                    });
+                }
                 continue;
             }
 
@@ -160,7 +167,7 @@ window.Firth.lex = (function (Firth) {
                 });
                 continue;
             }
-            
+
             throw new Error("Unexpected character '" + c + "' on line " + line);
         }
 

@@ -50,7 +50,7 @@ window.Firth.stdlib = (function (Firth) {
     defunTyped('def', ['symbol', 'any'], [], function (stack, scope) {
         var value = stack.pop();
         var name = stack.pop();
-        
+
         if (scope.hasOwnProperty(name.name)) {
             throw new Error("Cannot redefine variable \"" + name.name + "\"");
         } else {
@@ -118,7 +118,7 @@ window.Firth.stdlib = (function (Firth) {
             });
         });
     }
-    
+
     defunIntBinop('add', function (a, b) {
         return a + b;
     });
@@ -134,7 +134,7 @@ window.Firth.stdlib = (function (Firth) {
     });
     defunIntBinop('mod', function (a, b) {
         /* remainder with the sign of the divisor */
-        return ((a % b) + b) % b; 
+        return ((a % b) + b) % b;
     });
     defunTyped('divmod', ['integer', 'integer'], ['integer', 'integer'], function (stack, scope) {
         var value2 = stack.pop();
@@ -156,7 +156,7 @@ window.Firth.stdlib = (function (Firth) {
     });
 
     // Language Spec § Functions § Comparison
-    
+
     defunTyped('gt', ['integer', 'integer'], ['boolean'], function (stack, scope) {
         var value2 = stack.pop();
         var value1 = stack.pop();
@@ -164,6 +164,47 @@ window.Firth.stdlib = (function (Firth) {
         stack.push({
             type: 'boolean',
             value: value1.value > value2.value
+        });
+    });
+
+    // Language Spec § Functions § Boolean Algebra
+
+    defunTyped('and', ['boolean', 'boolean'], ['boolean'], function (stack, scope) {
+        var value2 = stack.pop();
+        var value1 = stack.pop();
+
+        stack.push({
+            type: 'boolean',
+            value: value1.value && value2.value
+        });
+    });
+
+    defunTyped('or', ['boolean', 'boolean'], ['boolean'], function (stack, scope) {
+        var value2 = stack.pop();
+        var value1 = stack.pop();
+
+        stack.push({
+            type: 'boolean',
+            value: value1.value || value2.value
+        });
+    });
+
+    defunTyped('xor', ['boolean', 'boolean'], ['boolean'], function (stack, scope) {
+        var value2 = stack.pop();
+        var value1 = stack.pop();
+
+        stack.push({
+            type: 'boolean',
+            value: (value1.value && !value2.value) || (!value1.value && value2.value)
+        });
+    });
+
+    defunTyped('not', ['boolean'], ['boolean'], function (stack, scope) {
+        var value = stack.pop();
+
+        stack.push({
+            type: 'boolean',
+            value: !value.value
         });
     });
 
