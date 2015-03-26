@@ -1,5 +1,23 @@
 {
   "name": "Firth",
+  "version": "0.0.0",
+  "description": "Firth is a functional, strongly dynamically-typed, concatenative stack-oriented programming language.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/TazeTSchnitzel/Firth.git"
+  },
+  "author": "Andrea Faulds <ajf@ajf.me>",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/TazeTSchnitzel/Firth/issues"
+  },
+  "homepage": "https://github.com/TazeTSchnitzel/Firth",
   "main": "src",
   "bin": "bin/firth.js",
   "dependencies": {
