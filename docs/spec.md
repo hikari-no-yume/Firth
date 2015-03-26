@@ -178,8 +178,8 @@ Type signatures MUST be strictly enforced by the implementation. Passing a funct
 
 ####Comparison
 
-* `eq` (`Any Any -> Bool`) - returns `true` if the two arguments are equal
-* `neq` (`Any Any -> Bool`) - returns `true` if the two arguments are not equal
+* `eq` (`'a 'b -> Bool`) - returns `true` if the two arguments are equal
+* `neq` (`'a 'b -> Bool`) - returns `true` if the two arguments are not equal
 * `gt` (`Int Int -> Bool`) - returns `true` if the first argument is greater than the second
 * `gteq` (`Int Int -> Bool`) - returns `true` if the first argument is greater than or equal to the second
 * `lt` (`Int Int -> Bool`) - returns `true` if the first argument is less than the second
