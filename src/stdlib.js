@@ -157,14 +157,30 @@ window.Firth.stdlib = (function (Firth) {
 
     // Language Spec § Functions § Comparison
 
-    defunTyped('gt', ['integer', 'integer'], ['boolean'], function (stack, scope) {
-        var value2 = stack.pop();
-        var value1 = stack.pop();
+    /* convenience function to avoid boilerplate for comparison functions */
+    function defunIntComparison(name, func) {
+        defunTyped(name, ['integer', 'integer'], ['boolean'], function (stack, scope) {
+            var value2 = stack.pop();
+            var value1 = stack.pop();
 
-        stack.push({
-            type: 'boolean',
-            value: value1.value > value2.value
+            stack.push({
+                type: 'boolean',
+                value: func(value1.value, value2.value)
+            });
         });
+    }
+
+    defunIntComparison('gt', function (a, b) {
+        return a > b;
+    });
+    defunIntComparison('gteq', function (a, b) {
+        return a >= b;
+    });
+    defunIntComparison('lt', function (a, b) {
+        return a < b;
+    });
+    defunIntComparison('lteq', function (a, b) {
+        return a <= b;
     });
 
     // Language Spec § Functions § Boolean Algebra
