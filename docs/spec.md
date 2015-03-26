@@ -163,7 +163,7 @@ Type signatures MUST be strictly enforced by the implementation. Passing a funct
 
 * `dup` (`'a -> 'a 'a`) - duplicates the value at the top of the stack
 * `drop` (`'a ->`) - drops the value at the top of the stack
-* `swap` (`'a 'b -> 'b 'a`) - swaps the the top two values on the stack
+* `swap` (`'a 'b -> 'b 'a`) - swaps the top two values on the stack
 
 ####Flow control
 
@@ -184,7 +184,7 @@ Type signatures MUST be strictly enforced by the implementation. Passing a funct
 
 * `eq` (`Any Any -> Bool`) - returns `true` if the two arguments are equal
 * `neq` (`Any Any -> Bool`) - returns `true` if the two arguments are not equal
-* `gt` (`Int Int -> Bool`) - returns `true` if the the first argument is greater than the second
-* `gteq` (`Int Int -> Bool`) - returns `true` if the the first argument is greater than or equal to the second
-* `lt` (`Int Int -> Bool`) - returns `true` if the the first argument is less than the second
-* `lteq` (`Int Int -> Bool`) - returns `true` if the the first argument is less than or equal to the second
+* `gt` (`Int Int -> Bool`) - returns `true` if the first argument is greater than the second
+* `gteq` (`Int Int -> Bool`) - returns `true` if the first argument is greater than or equal to the second
+* `lt` (`Int Int -> Bool`) - returns `true` if the first argument is less than the second
+* `lteq` (`Int Int -> Bool`) - returns `true` if the first argument is less than or equal to the second
