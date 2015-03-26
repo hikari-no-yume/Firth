@@ -1,7 +1,5 @@
+var utils = require('./utils');
 module.exports = function (executor) {
-    'use strict';
-
-    var utils = require('./utils');
 
     /* this is built up procedurally */
     var stdlib = {};
