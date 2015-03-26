@@ -108,7 +108,7 @@ At the start of a user-defined function, a new, empty scope is pushed onto the v
 Operations within a user-defined function are processed in the order they come in the function body. For each operation:
 
 * If it is a literal (for an integer, string, function or symbol), the value is pushed onto the data stack
-* If it is a variable name, the variable binding by that name is searched for in each successive each entry in the scope stack, from top to bottom, until it is found, and then:
+* If it is a variable name, the variable binding by that name is searched for in each successive each entry in the scope stack, from top to bottom, stopping at the first item found, and then:
   * If the variable binding is found, its value is pushed onto the data stack
   * If the variable binding is not found, an error is raised
 * If is the function invocation operator (`.`), the value on the top of the data stack is popped off, and then:
@@ -157,7 +157,7 @@ Type signatures MUST be strictly enforced by the implementation. Passing a funct
 
 ####Variable definition
 
-* `def` (`Sym Any ->`) - defines, in the scope at the top of the scope stack, the variable named by the symbol with the value given, and errors if the value is already defined in it
+* `def` (`Sym Any ->`) - defines, in the scope at the top of the scope stack, the variable named by the symbol with the value given, and errors if the value is already defined in it (`def` MUST NOT error if the variable exists lower in the scope stack)
 
 ####Stack manipulation
 
