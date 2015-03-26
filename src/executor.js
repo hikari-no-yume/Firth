@@ -1,10 +1,14 @@
-window.Firth.executor = (function (Firth) {
+module.exports = (function (Firth) {
     'use strict';
+
+    var executor = {};
+    var Stack = require('./Stack');
+    var stdlib = require('./stdlib')(executor);
 
     /* takes an AST and executes it! */
     function execute(ast) {
-        var stack = new Firth.Stack(),
-            scope = Firth.stdlib;
+        var stack = new Stack(),
+            scope = stdlib;
 
         _execute(ast, stack, scope);
     }
@@ -52,8 +56,8 @@ window.Firth.executor = (function (Firth) {
         }
     }
 
-    return {
-        execute: execute,
-        invokeFunction: invokeFunction
-    };
-}(window.Firth));
+    executor.execute = execute;
+    executor.invokeFunction = invokeFunction;
+
+    return executor;
+}());

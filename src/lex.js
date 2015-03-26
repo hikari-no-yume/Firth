@@ -1,5 +1,7 @@
-window.Firth.lex = (function (Firth) {
+module.exports = (function () {
     'use strict';
+
+    var utils = require('./utils');
 
     /* takes a script text
      * produces list of tokens
@@ -159,7 +161,7 @@ window.Firth.lex = (function (Firth) {
                 if (isNaN(integer)) {
                     throw new Error("integer is NaN?!?");
                 }
-                Firth.utils.checkOverflow(integer);
+                utils.checkOverflow(integer);
 
                 tokens.push({
                     type: 'integer',
@@ -175,4 +177,4 @@ window.Firth.lex = (function (Firth) {
     }
 
     return lex;
-}(window.Firth));
+}());
