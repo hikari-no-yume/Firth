@@ -47,12 +47,12 @@ window.Firth.stdlib = (function (Firth) {
 
     // Language Spec § Functions § Variable Definition
 
-    defunTyped('def', ['symbol', 'function'], [], function (stack, scope) {
+    defunTyped('def', ['symbol', 'any'], [], function (stack, scope) {
         var value = stack.pop();
         var name = stack.pop();
         
-        if (scope.hasOwnProperty(name)) {
-            throw new Error("Cannot redefine variable \"" + name + "\"");
+        if (scope.hasOwnProperty(name.name)) {
+            throw new Error("Cannot redefine variable \"" + name.name + "\"");
         } else {
             scope[name.name] = value;
         }
