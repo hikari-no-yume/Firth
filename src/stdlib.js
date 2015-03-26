@@ -1,5 +1,7 @@
-window.Firth.stdlib = (function (Firth) {
+module.exports = function (executor) {
     'use strict';
+
+    var utils = require('./utils');
 
     /* this is built up procedurally */
     var stdlib = {};
@@ -86,7 +88,7 @@ window.Firth.stdlib = (function (Firth) {
         }
 
         if (condition.value) {
-            Firth.executor.invokeFunction(trueCase, stack, scope);
+            executor.invokeFunction(trueCase, stack, scope);
         }
     });
     defun('ifelse', function (stack, scope) {
@@ -98,7 +100,7 @@ window.Firth.stdlib = (function (Firth) {
             throw new Error('ifelse takes two functions and a boolean, ' + falseCase.type + ', ' + trueCase.type + ' and ' + condition.type + ' given');
         }
 
-        Firth.executor.invokeFunction(condition.value ? trueCase : falseCase, stack, scope);
+        executor.invokeFunction(condition.value ? trueCase : falseCase, stack, scope);
     });
 
     // Language Spec § Functions § Integer Arithmetic
@@ -110,7 +112,7 @@ window.Firth.stdlib = (function (Firth) {
             var value1 = stack.pop();
 
             var result = func(value1.value, value2.value);
-            Firth.utils.checkOverflow(result);
+            utils.checkOverflow(result);
 
             stack.push({
                 type: 'integer',
@@ -141,9 +143,9 @@ window.Firth.stdlib = (function (Firth) {
         var value1 = stack.pop();
 
         var result1 = Math.floor(value1.value / value2.value);
-        Firth.utils.checkOverflow(result1);
+        utils.checkOverflow(result1);
         var result2 = ((value1.value % value2.value) + value2.value) % value2.value;
-        Firth.utils.checkOverflow(result2);
+        utils.checkOverflow(result2);
 
         stack.push({
             type: 'integer',
@@ -229,8 +231,8 @@ window.Firth.stdlib = (function (Firth) {
     defunTyped('show', ['any'], [], function (stack, scope) {
         var value = stack.pop();
 
-        alert(JSON.stringify(value, null, 4));
+        (typeof alert === 'undefined' ? console.log : alert)(JSON.stringify(value, null, 4));
     });
 
     return stdlib;
-}(window.Firth));
+};

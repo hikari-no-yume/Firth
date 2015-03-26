@@ -1,4 +1,4 @@
-window.Firth.Stack = (function (Firth) {
+module.exports = (function () {
     'use strict';
 
     /* our abstract stack type :D */
@@ -29,4 +29,4 @@ window.Firth.Stack = (function (Firth) {
     }
 
     return Stack;
-}(window.Firth));
+}());

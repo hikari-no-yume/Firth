@@ -1,4 +1,4 @@
-window.Firth.parse = (function (Firth) {
+module.exports = (function () {
     'use strict';
 
     /* since this is a stack-oriented language, the only syntactical analysis
@@ -45,10 +45,10 @@ window.Firth.parse = (function (Firth) {
             /* function body end */
             } else if (curTok.type === ']') {
                 if (recursion) {
-                    /* allows recursive parsing */    
+                    /* allows recursive parsing */
                     return opcodes;
                 } else {
-                    throw new Error("Mismatched ]"); 
+                    throw new Error("Mismatched ]");
                 }
             } else {
                 dequeue();
@@ -61,4 +61,4 @@ window.Firth.parse = (function (Firth) {
     }
 
     return parse;
-}(window.Firth));
+}());

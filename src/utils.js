@@ -1,4 +1,4 @@
-window.Firth.utils = (function (Firth) {
+module.exports = (function () {
     'use strict';
 
     function checkOverflow(integer) {
@@ -11,4 +11,4 @@ window.Firth.utils = (function (Firth) {
     return {
         checkOverflow: checkOverflow
     };
-}(window.Firth));
+}());
