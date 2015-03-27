@@ -44,6 +44,8 @@ module.exports = (function (Firth) {
                     throw new Error("Unhandled opcode type " + opcode.type);
             }
         }
+
+        return scope;
     }
 
     function invokeFunction(func, stack, scope) {
@@ -58,6 +60,7 @@ module.exports = (function (Firth) {
 
     executor.execute = execute;
     executor.invokeFunction = invokeFunction;
+    executor._execute = _execute;
 
     return executor;
 }());
