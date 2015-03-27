@@ -53,7 +53,6 @@ module.exports = function(script) {
 
         /* ; comment */
         if (c === ';') {
-            i++;
             while (c !== '\n') {
                 i++;
                 if (i < len) {
