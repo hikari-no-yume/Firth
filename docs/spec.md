@@ -19,10 +19,10 @@ A Firth program source file may contain any of the following tokens. Their forma
 * `/\[/` and `/\]/` - Function literal opening and closing braces (respectively)
   
   Function literals are delimited by these (see syntax)
-* `/[_a-z][_a-z0-9]+/` - Variable name
+* `/[a-z][\-a-z0-9]+/` - Variable name
 
   The value of this token (the variable name) is the entire literal text
-* `/\/[_a-z][_a-z0-9]+/` - Symbol literal
+* `/\/[a-z][\-a-z0-9]+/` - Symbol literal
 
   The value of this token (the symbol value) is the literal text following the slash (`/`))
 * `/[\+\-]?[0-9]+/` - Integer literal

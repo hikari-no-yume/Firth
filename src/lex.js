@@ -13,7 +13,7 @@ module.exports = function(script) {
     }
 
     function isIdentifierLead(c) {
-        return c === '_' || ('a' <= c && c <= 'z');
+        return 'a' <= c && c <= 'z';
     }
 
     function isDigit(c) {
@@ -21,7 +21,7 @@ module.exports = function(script) {
     }
 
     function isIdentifierTrail(c) {
-        return isIdentifierLead(c) || isDigit(c);
+        return isIdentifierLead(c) || isDigit(c) || c === '-';
     }
 
     var i = 0,

@@ -26,6 +26,7 @@ I borrowed quite a few things from other languages:
 * Using `/foo bar def.` for variable declaration comes from PostScript
 * I hate integer overflow (it is an inexcusable class of bugs in an age where mandatory checks cost so little CPU time), and I like how Haskell and Python have arbitrary-precision integers, so I'm having those too
 * `div` using floor division and `mod` using the sign of the divisor is [borrowed from Python](http://python-history.blogspot.co.uk/2010/08/why-pythons-integer-division-floors.html)
+* `kebab-case` borrowed from [Tulip](http://www.jneen.net/posts/2015-03-01-tulip-language)
 
 Guiding Principles
 ------------------
@@ -41,4 +42,5 @@ In the language's design, there are some guiding principles:
     * Variable assignment, function definition are also just functions
 * [Don't require the Shift key](https://twitter.com/rabcyr/status/575159023244345344)
     * Single quotes and square braces, which don't require Shift on US keyboards, are used instead of double quotes and curly braces, which do
-    * No symbolic operators, i.e. `add` and `sub` instead of `+` and `-` 
+    * No symbolic operators, i.e. `add` and `sub` instead of `+` and `-`
+    * `kebab-case` not `snake_case` or `camelCase`
