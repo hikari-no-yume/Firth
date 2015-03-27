@@ -42,4 +42,18 @@ Or, read on to learn how to get Firth up and running!
 Usage
 -----
 
-Currently, the (incomplete) implementation is in `src`. For testing purposes, open `test.html` in your browser, which lets you type in Firth code and see its tokenised and parsed forms, as well as its output.
+The (incomplete) implementation is currently written in JavaScript, and you'll need node.js to buld it.
+
+Use npm to install the dependencies:
+
+    $ npm install
+
+Now you can try out the REPL:
+
+    $ ./bin/firth.js
+
+Or, you can use gulp (`npm install -g gulp`) to compile the interpreter into a single file:
+
+    $ gulp
+
+And try out `test.html` in your browser, which lets you type in Firth code and execute it, seeing its tokenised and parsed forms.
