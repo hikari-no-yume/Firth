@@ -24,10 +24,14 @@ var stack = new Stack();
 var Stdlib = require('../src/stdlib');
 var scope = Stdlib;
 var tokens = [];
+var showTokens = false;
+var showAst = false;
 var builtins = {
     '\\help': function() {
         console.log('\\clear\tremove all element from stack & from the token buffer');
         console.log('\\reset\treset scope & \\clear');
+        console.log('\\tokens\ttoggle - show parsed tokens. currently: ', showTokens);
+        console.log('\\ast\ttoggle - show parsed AST. currently: ', showAst);
         console.log('\\help\tthis help');
     },
     '\\clear': function() {
@@ -37,6 +41,12 @@ var builtins = {
     '\\reset': function() {
         builtins.clear();
         scope = Stdlib;
+    },
+    '\\tokens': function() {
+        showTokens = !showTokens;
+    },
+    '\\ast': function() {
+        showAst = !showAst;
     }
 }
 
@@ -61,6 +71,40 @@ var rl = readline.createInterface({
     }
 });
 
+var _format = function(elements) {
+    return elements.map(function(element) {
+        var formattedElement = {
+            type: element.type
+        };
+        if ('name' in element) {
+            formattedElement.name = element.name;
+        }
+        if ('getValue' in element) {
+            formattedElement.value = element.getValue();
+            if (formattedElement.value instanceof Array) {
+                formattedElement.value = _format(formattedElement.value);
+            }
+        }
+        return formattedElement;
+    });
+}
+
+var printTokens = function(tokens) {
+    if (!showTokens) {
+        return;
+    }
+    console.log('tokens:');
+    console.dir(_format(tokens), {depth: null, colors: true});
+};
+
+var printAst = function(ast) {
+    if (!showAst) {
+        return;
+    }
+    console.log('AST:');
+    console.dir(_format(ast), {depth: null, colors: true});
+};
+
 rl.setPrompt('> ');
 rl.prompt();
 
@@ -79,10 +123,12 @@ rl.on('line', function (cmd) {
                 if (type === ']') {
                     depth--;
                 }
-            };
+            }
+            printTokens(newTokens);
             tokens = tokens.concat.apply(tokens, newTokens);
             if (depth === 0) {
                 var ast = Firth.parse(tokens);
+                printAst(ast);
                 tokens = [];
                 scope = Firth.execute(ast, stack, scope);
             }
