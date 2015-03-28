@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var argv = require('yargs')
-    .usage('Usage: $0 [options] file')
+    .usage('Usage: $0 [options] [file]')
     .options('help', {
         alias: 'h'
     })
