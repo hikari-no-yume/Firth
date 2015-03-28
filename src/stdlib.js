@@ -34,11 +34,11 @@ function typeCheck(name, consumes, produces, func) {
                 throw new Error("Result " + (i + 1) + " of " + name + " should be of the type " + expectedType + ", " + actualType + " produced");
             }
         }
-    });
+    }, name);
 }
 
 function defun(name, func) {
-    stdlib[name] = new types.FuncValue(func);
+    stdlib[name] = new types.FuncValue(func, name);
 }
 
 function defunTyped(name, consumes, produces, func) {
