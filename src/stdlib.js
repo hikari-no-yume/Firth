@@ -86,7 +86,7 @@ defun('if', function (stack, scope) {
     }
 
     if (condition.getValue()) {
-        execute(trueCase, stack, scope);
+        execute(trueCase.getValue(), stack, scope);
     }
 });
 defun('ifelse', function (stack, scope) {
@@ -97,8 +97,7 @@ defun('ifelse', function (stack, scope) {
     if (falseCase.type !== 'function' || trueCase.type !== 'function' || condition.type !== 'boolean') {
         throw new Error('ifelse takes two functions and a boolean, ' + falseCase.type + ', ' + trueCase.type + ' and ' + condition.type + ' given');
     }
-
-    execute(condition.getValue() ? trueCase : falseCase, stack, scope);
+    execute(condition.getValue() ? trueCase.getValue() : falseCase.getValue(), stack, scope);
 });
 
 // Language Spec § Functions § Integer Arithmetic

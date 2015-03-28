@@ -13,7 +13,7 @@ function IntValue(source) {
         }
         return integer;
     }
-    
+
     var value;
     if (typeof(source) === "string") {
         value = parseInt(source, 10);
@@ -164,7 +164,7 @@ function FuncValue(source) {
     var that = {
         type: "function",
         getValue: function () {
-            return value;
+            return source;
         },
         show: function () {
             if (typeof(source) === "function") {
