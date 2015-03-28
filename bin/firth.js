@@ -21,16 +21,38 @@ if (argv._.length) {
 
 var Stack = require('../src/Stack');
 var stack = new Stack();
-var scope = require('../src/stdlib');
+var Stdlib = require('../src/stdlib');
+var scope = Stdlib;
+var tokens = [];
+var builtins = {
+    '\\help': function() {
+        console.log('\\clear\tremove all element from stack & from the token buffer');
+        console.log('\\reset\treset scope & \\clear');
+        console.log('\\help\tthis help');
+    },
+    '\\clear': function() {
+        stack = new Stack();
+        tokens = [];
+    },
+    '\\reset': function() {
+        builtins.clear();
+        scope = Stdlib;
+    }
+}
 
 var readline = require('readline');
 var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
     completer: function (line) {
-        var lastWord = line.split(/\b/).pop();
+        var autocompleteScope = builtins;
+        var lastWord = line;
+        if (line.indexOf('\\') !== 0) {
+            lastWord = line.split(/\b/).pop();
+            autocompleteScope = scope;
+        }
         var keys = [];
-        for (var key in scope) {
+        for (var key in autocompleteScope) {
             keys.push(key);
         };
         return [keys.filter(function (c) {
@@ -43,29 +65,38 @@ rl.setPrompt('> ');
 rl.prompt();
 
 var depth = 0;
-var tokens = [];
 rl.on('line', function (cmd) {
-    try {
-        var newTokens = Firth.lex(cmd);
-        for (var i = 0; i < newTokens.length; i++) {
-            var type = newTokens[i].type;
-            if (type === '[') {
-                depth++;
-            } else
-            if (type === ']') {
-                depth--;
+    if (builtins.hasOwnProperty(cmd)) {
+        builtins[cmd]();
+    } else {
+        try {
+            var newTokens = Firth.lex(cmd);
+            for (var i = 0; i < newTokens.length; i++) {
+                var type = newTokens[i].type;
+                if (type === '[') {
+                    depth++;
+                } else
+                if (type === ']') {
+                    depth--;
+                }
+            };
+            tokens = tokens.concat.apply(tokens, newTokens);
+            if (depth === 0) {
+                var ast = Firth.parse(tokens);
+                tokens = [];
+                scope = Firth.execute(ast, stack, scope);
             }
-        };
-        tokens = tokens.concat.apply(tokens, newTokens);
-        if (depth === 0) {
-            var ast = Firth.parse(tokens);
+        } catch (e) {
             tokens = [];
-            scope = Firth.execute(ast, stack, scope);
+            console.log(e);
         }
-    } catch (e) {
-        tokens = [];
-        console.error(e);
     }
+    var stackValues = [];
+    for (var i = stack.getHeight(); i > 0; i--) {
+        var value = stack.peek(i - 1);
+        stackValues.push(value.type + ':' + value.show());
+    }
+    console.log('(' + stackValues.join(' ') + ')');
     rl.prompt();
 });
 
