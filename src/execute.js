@@ -6,8 +6,7 @@ function execute(ast, stack, scope) {
     /* JavaScript's prototypes make creating a scope chain easy :D */
     var scope = Object.create(scope);
 
-    for (var i = 0; i < ast.length; i++) {
-        var opcode = ast[i];
+    ast.forEach(function (opcode) {
         switch (opcode.type) {
             case 'boolean':
             case 'integer':
@@ -34,7 +33,7 @@ function execute(ast, stack, scope) {
             default:
                 throw new Error("Unhandled opcode type " + opcode.type);
         }
-    }
+    });
 
     return scope;
 }
