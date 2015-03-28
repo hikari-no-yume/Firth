@@ -39,7 +39,7 @@ window.onload = function () {
         get('firth-ast').value = JSON.stringify(ast, null, 4);
 
         try {
-            Firth.executor.execute(ast);
+            Firth.execute(ast, new Firth.Stack(), Firth.stdlib);
         } catch (e) {
             alert('Error when executing: ' + e.message);
         }

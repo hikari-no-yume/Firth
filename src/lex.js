@@ -1,4 +1,4 @@
-var utils = require('./utils');
+var types = require('./types.js');
 
 /* takes a script text
  * produces list of tokens
@@ -93,10 +93,7 @@ module.exports = function(script) {
                     break;
                 }
             }
-            tokens.push({
-                type: 'symbol',
-                name: symbol
-            });
+            tokens.push(new types.SymbolValue(symbol));
             continue;
         }
 
@@ -113,10 +110,7 @@ module.exports = function(script) {
                 }
             }
             if (token === 'true' || token === 'false') {
-                tokens.push({
-                    type: 'boolean',
-                    value: token === 'true'
-                });
+                tokens.push(new types.BoolValue(token));
             } else {
                 tokens.push({
                     type: 'variable',
@@ -152,17 +146,7 @@ module.exports = function(script) {
                 }
             }
 
-            var integer = parseInt(digits, 10);
-            /* this shouldn't happen, but let's be careful */
-            if (isNaN(integer)) {
-                throw new Error("integer is NaN?!?");
-            }
-            utils.checkOverflow(integer);
-
-            tokens.push({
-                type: 'integer',
-                value: integer
-            });
+            tokens.push(new types.IntValue(digits));
             continue;
         }
 

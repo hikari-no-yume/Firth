@@ -15,13 +15,13 @@ if (argv._.length) {
 
     var tokens = Firth.lex(fs.readFileSync(argv._[0], {encoding: 'utf8'}));
     var ast = Firth.parse(tokens);
-    Firth.executor.execute(ast);
+    Firth.execute(ast, new Firth.Stack(), Firth.stdlib);
     return;
 }
 
 var Stack = require('../src/Stack');
 var stack = new Stack();
-var scope = require('../src/stdlib')(Firth.executor);
+var scope = require('../src/stdlib');
 
 var readline = require('readline');
 var rl = readline.createInterface({
@@ -60,7 +60,7 @@ rl.on('line', function (cmd) {
         if (depth === 0) {
             var ast = Firth.parse(tokens);
             tokens = [];
-            scope = Firth.executor._execute(ast, stack, scope);
+            scope = Firth.execute(ast, stack, scope);
         }
     } catch (e) {
         tokens = [];

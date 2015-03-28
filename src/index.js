@@ -1,5 +1,7 @@
 module.exports = {
-    lex: require('./lex'),
-    parse: require('./parse'),
-    executor: require('./executor'),
+    lex: require('./lex.js'),
+    parse: require('./parse.js'),
+    execute: require('./execute.js'),
+    Stack: require('./Stack.js'),
+    stdlib: require('./stdlib.js')
 };

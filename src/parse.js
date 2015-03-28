@@ -1,3 +1,5 @@
+var types = require('./types.js');
+
 /* since this is a stack-oriented language, the only syntactical analysis
  * needed is to handle function braces - and even that is not strictly
  * necessary (but we do it to make this workable for optimisation)
@@ -34,10 +36,7 @@ function _parse(tokens, recursion) {
             }
             dequeue(); /* pop off ] */
 
-            opcodes.push({
-                type: 'function',
-                body: innerOpcodes
-            });
+            opcodes.push(new types.FuncValue(innerOpcodes));
             continue;
         /* function body end */
         } else if (curTok.type === ']') {
