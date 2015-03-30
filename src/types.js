@@ -13,7 +13,7 @@ function IntValue(source) {
         }
         return integer;
     }
-    
+
     var value;
     if (typeof(source) === "string") {
         value = parseInt(source, 10);
@@ -178,10 +178,13 @@ function SymbolValue(source) {
     return that;
 }
 
-function FuncValue(source) {
+function FuncValue(source, name) {
     var invoke;
 
     if (typeof(source) === "function") {
+        if (name === undefined) {
+            throw new Error("Internal functions need a name");
+        }
         invoke = source;
     } else if (typeof(source) !== "object" && !(source instanceof Array)) {
         throw new Error("FuncValue expects a function or an AST array");
@@ -198,9 +201,20 @@ function FuncValue(source) {
         },
         show: function () {
             if (typeof(source) === "function") {
-                return "[<internal>]";
+                return name;
             } else {
-                return "[<user>]";
+                return "[" + source.map(function(opcode) {
+                    if ("show" in opcode) {
+                        return opcode.show();
+                    }
+                    if ("name" in opcode) {
+                        return opcode.name;
+                    }
+                    if (opcode.type === "invoke") {
+                        return ".";
+                    }
+                    return opcode.type
+                }).join(" ") + "]";
             }
         },
         invoke: invoke
