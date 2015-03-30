@@ -8,8 +8,9 @@ function execute(ast, stack, scope) {
 
     ast.forEach(function (opcode) {
         switch (opcode.type) {
-            case 'boolean':
             case 'integer':
+            case 'string':
+            case 'boolean':
             case 'symbol':
             case 'function':
                 stack.push(opcode);

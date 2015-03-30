@@ -79,6 +79,36 @@ function IntValue(source) {
     return that;
 }
 
+function StrValue(value) {
+    var that = {
+        type: "string",
+        show: function () {
+            return "'" + Array.prototype.map.call(value, function (c) {
+                if (c === "'" || c === "\\") {
+                    return "\\" + c;
+                } else if (c === "\n") {
+                    return "\\n";
+                } else if (c === "\r") {
+                    return "\\r";
+                } else {
+                    return c;
+                }
+            }).join('') + "'";
+        },
+        equals: function (b) {
+            if (that === b) {
+                return true;
+            } else if (that.type == "string") {
+                return value === that.getValue();
+            } else {
+                return false;
+            }
+        }
+    };
+
+    return that;
+}
+
 function BoolValue(source) {
     var value;
     if (typeof(source) === "string") {
@@ -181,6 +211,7 @@ function FuncValue(source) {
 
 module.exports = {
     IntValue: IntValue,
+    StrValue: StrValue,
     BoolValue: BoolValue,
     SymbolValue: SymbolValue,
     FuncValue: FuncValue

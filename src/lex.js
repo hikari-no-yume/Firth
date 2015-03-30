@@ -150,6 +150,50 @@ module.exports = function(script) {
             continue;
         }
 
+        /* 'string' */
+        if (c === "'") {
+            var string = '';
+
+            i++;
+            if (!(i < len)) {
+                throw new Error("Unexpected end of script: unterminated string");
+            } else {
+                c = script[i];
+            }
+
+            while (c !== "'") {
+                if (c === '\\') {
+                    i++;
+                    if (i < len) {
+                        c = script[i];
+                    } else {
+                        throw new Error("Unexpected end of script: unterminated string");
+                    }
+                    if (c === '\\' || c === "'") {
+                        string += c;
+                    } else if (c === 'n') {
+                        string += '\n';
+                    } else if (c === 'r') {
+                        string += '\r';
+                    } else {
+                        throw new Error("\\" + c + " is not a valid escape sequence");
+                    }
+                } else {
+                    string += c;
+                }
+                i++;
+                if (i < len) {
+                    c = script[i];
+                } else {
+                    throw new Error("Unexpected end of script: unterminated string");
+                }
+            }
+
+            i++;
+            tokens.push(new types.StrValue(string));
+            continue;
+        }
+
         throw new Error("Unexpected character '" + c + "' on line " + line);
     }
 
