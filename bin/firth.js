@@ -22,6 +22,7 @@ if (argv._.length) {
 var Stack = require('../src/Stack');
 var stack = new Stack();
 var scope = require('../src/stdlib');
+var tokenTypes = require('../src/token-types');
 
 var readline = require('readline');
 var rl = readline.createInterface({
@@ -48,11 +49,11 @@ rl.on('line', function (cmd) {
     try {
         var newTokens = Firth.lex(cmd);
         for (var i = 0; i < newTokens.length; i++) {
-            var type = newTokens[i].type;
-            if (type === '[') {
+            var token = newTokens[i];
+            if (token.getName() === 'function-opening') {
                 depth++;
             } else
-            if (type === ']') {
+            if (token.getName() === 'function-closing') {
                 depth--;
             }
         };
@@ -66,6 +67,12 @@ rl.on('line', function (cmd) {
         tokens = [];
         console.error(e);
     }
+    var stackValues = [];
+    for (var i = stack.getHeight(); i > 0; i--) {
+        var value = stack.peek(i - 1);
+        stackValues.push(value);
+    }
+    console.log(stackValues.join(' '));
     rl.prompt();
 });
 

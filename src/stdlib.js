@@ -1,18 +1,18 @@
-var types = require('./types.js'),
-    execute = require('./execute.js');
+var valueTypes = require('./value-types');
+var execute = require('./execute.js');
 
 /* this is built up procedurally */
 var stdlib = {};
 
 /* used to enforce internal function types */
 function typeCheck(name, consumes, produces, func) {
-    return new types.FuncValue(function (stack, scope) {
+    return new valueTypes['internal-function'](function (stack, scope) {
         var initialHeight = stack.getHeight();
         if (initialHeight < consumes.length) {
             throw new Error(name + " expects " + consumes.length + " arguments, stack height is " + initialHeight);
         }
         for (var i = 0; i < consumes.length; i++) {
-            var actualType = stack.peek(consumes.length - 1 - i).type,
+            var actualType = stack.peek(consumes.length - 1 - i).getType(),
                 expectedType = consumes[i];
             if (expectedType !== 'any' && actualType !== expectedType) {
                 throw new Error(name + " expects argument " + (i + 1) + " to be of the type " + expectedType + ", " + actualType + " given");
@@ -28,17 +28,17 @@ function typeCheck(name, consumes, produces, func) {
             throw new Error(name + " should consume " + consumes.length + " arguments and produce " + produces.length + " results, stack is " + Math.abs(diff) + " values too " + (diff > 0 ? "low" : "high"));
         }
         for (var i = 0; i < produces.length; i++) {
-            var actualType = stack.peek(produces.length - 1 - i).type,
+            var actualType = stack.peek(produces.length - 1 - i).getType(),
                 expectedType = produces[i];
             if (expectedType !== 'any' && actualType !== expectedType) {
                 throw new Error("Result " + (i + 1) + " of " + name + " should be of the type " + expectedType + ", " + actualType + " produced");
             }
         }
-    });
+    }, name);
 }
 
 function defun(name, func) {
-    stdlib[name] = new types.FuncValue(func);
+    stdlib[name] = new valueTypes['internal-function'](func, name);
 }
 
 function defunTyped(name, consumes, produces, func) {
@@ -49,12 +49,12 @@ function defunTyped(name, consumes, produces, func) {
 
 defunTyped('def', ['symbol', 'any'], [], function (stack, scope) {
     var value = stack.pop();
-    var name = stack.pop();
+    var name = stack.pop().getValue();
 
-    if (scope.hasOwnProperty(name.getName())) {
-        throw new Error("Cannot redefine variable \"" + name.getName() + "\"");
+    if (scope.hasOwnProperty(name)) {
+        throw new Error("Cannot redefine variable \"" + name + "\"");
     } else {
-        scope[name.getName()] = value;
+        scope[name] = value;
     }
 });
 
@@ -81,8 +81,8 @@ defun('if', function (stack, scope) {
     var trueCase = stack.pop();
     var condition = stack.pop();
 
-    if (trueCase.type !== 'function' || condition.type !== 'boolean') {
-        throw new Error('if takes a function and a boolean, ' + trueCase.type + ' and ' + condition.type + ' given');
+    if (trueCase.getType() !== 'function' || condition.getType() !== 'boolean') {
+        throw new Error('if takes a function and a boolean, ' + trueCase.getType() + ' and ' + condition.getType() + ' given');
     }
 
     if (condition.getValue()) {
@@ -94,8 +94,8 @@ defun('ifelse', function (stack, scope) {
     var trueCase = stack.pop();
     var condition = stack.pop();
 
-    if (falseCase.type !== 'function' || trueCase.type !== 'function' || condition.type !== 'boolean') {
-        throw new Error('ifelse takes two functions and a boolean, ' + falseCase.type + ', ' + trueCase.type + ' and ' + condition.type + ' given');
+    if (falseCase.getType() !== 'function' || trueCase.getType() !== 'function' || condition.getType() !== 'boolean') {
+        throw new Error('ifelse takes two functions and a boolean, ' + falseCase + ', ' + trueCase + ' and ' + condition + ' given');
     }
 
     if (condition.getValue()) {
@@ -148,7 +148,7 @@ function defunIntComparison(name, func) {
         var value2 = stack.pop();
         var value1 = stack.pop();
 
-        stack.push(new types.BoolValue(func(value1, value2)));
+        stack.push(new valueTypes.boolean(func(value1, value2)));
     });
 }
 
@@ -199,7 +199,7 @@ defunTyped('not', ['boolean'], ['boolean'], function (stack, scope) {
 defunTyped('show', ['any'], [], function (stack, scope) {
     var value = stack.pop();
 
-    (typeof alert === 'undefined' ? console.log : alert)(value.show());
+    (typeof alert === 'undefined' ? console.log : alert)(value.toString());
 });
 
 module.exports = stdlib;
