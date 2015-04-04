@@ -1,4 +1,5 @@
-var types = require('./types.js');
+var tokenTypes = require('./token-types');
+var valueTypes = require('./value-types');
 
 /* takes a script text
  * produces list of tokens
@@ -6,10 +7,6 @@ var types = require('./types.js');
 module.exports = function(script) {
     function isWhitespace(c) {
         return c === ' ' || c === '\n' || c === '\r' || c === '\t';
-    }
-
-    function isPunctuation(c) {
-        return c === '.' || c === '[' || c === ']';
     }
 
     function isIdentifierLead(c) {
@@ -65,10 +62,20 @@ module.exports = function(script) {
         }
 
         /* punctuation (braces, dots) */
-        if (isPunctuation(c)) {
-            tokens.push({
-                type: (c === '.') ? 'invoke' : c
-            });
+        if (c === '.') {
+            tokens.push(new tokenTypes.Invoke());
+            i++;
+            continue;
+        }
+
+        if (c === '[') {
+            tokens.push(new tokenTypes.FunctionOpening());
+            i++;
+            continue;
+        }
+
+        if (c === ']') {
+            tokens.push(new tokenTypes.FunctionClosing());
             i++;
             continue;
         }
@@ -93,7 +100,7 @@ module.exports = function(script) {
                     break;
                 }
             }
-            tokens.push(new types.SymbolValue(symbol));
+            tokens.push(new tokenTypes.Literal(new valueTypes.symbol(symbol)));
             continue;
         }
 
@@ -110,12 +117,9 @@ module.exports = function(script) {
                 }
             }
             if (token === 'true' || token === 'false') {
-                tokens.push(new types.BoolValue(token));
+                tokens.push(new tokenTypes.Literal(new valueTypes.boolean(token)));
             } else {
-                tokens.push({
-                    type: 'variable',
-                    name: token
-                });
+                tokens.push(new tokenTypes.VariableName(token));
             }
             continue;
         }
@@ -146,7 +150,7 @@ module.exports = function(script) {
                 }
             }
 
-            tokens.push(new types.IntValue(digits));
+            tokens.push(new tokenTypes.Literal(new valueTypes.integer(digits)));
             continue;
         }
 
@@ -190,7 +194,7 @@ module.exports = function(script) {
             }
 
             i++;
-            tokens.push(new types.StrValue(string));
+            tokens.push(new tokenTypes.Literal(new valueTypes.string(string)));
             continue;
         }
 

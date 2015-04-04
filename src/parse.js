@@ -1,4 +1,6 @@
-var types = require('./types.js');
+var tokenTypes = require('./token-types');
+var opcodeTypes = require('./opcode-types');
+var valueTypes = require('./value-types');
 
 /* since this is a stack-oriented language, the only syntactical analysis
  * needed is to handle function braces - and even that is not strictly
@@ -22,34 +24,42 @@ function _parse(tokens, recursion) {
 
     var opcodes = [],
         recursion = recursion || false;
-
     while (tokens.length) {
         var curTok = head();
-
         /* function body start */
-        if (curTok.type === '[') {
+        if (curTok instanceof tokenTypes.FunctionOpening) {
             dequeue();
 
             var innerOpcodes = _parse(tokens, true);
-            if (!tokens.length || tokens[tokens.length - 1].type !== ']') {
+            if (!tokens.length || !(tokens[tokens.length - 1] instanceof tokenTypes.FunctionClosing)) {
                 throw new Error("Missing end ] in function");
             }
             dequeue(); /* pop off ] */
 
-            opcodes.push(new types.FuncValue(innerOpcodes));
+            opcodes.push(new opcodeTypes.PushValue(new valueTypes.function(innerOpcodes)));
             continue;
         /* function body end */
-        } else if (curTok.type === ']') {
+        } else if (curTok instanceof tokenTypes.FunctionClosing) {
             if (recursion) {
                 /* allows recursive parsing */
                 return opcodes;
             } else {
                 throw new Error("Mismatched ]");
             }
-        } else {
+        } else if (curTok instanceof tokenTypes.Literal) {
             dequeue();
-            opcodes.push(curTok);
+            opcodes.push(new opcodeTypes.PushValue(curTok.value));
             continue;
+        } else if (curTok instanceof tokenTypes.VariableName) {
+            dequeue();
+            opcodes.push(new opcodeTypes.PushVariable(curTok.value));
+            continue;
+        } else if (curTok instanceof tokenTypes.Invoke) {
+            dequeue();
+            opcodes.push(new opcodeTypes.Invoke());
+            continue;
+        } else {
+            throw new Error("Unexpected " + curTok);
         }
     }
 

@@ -1,3 +1,5 @@
+var valueTypes = require('./value-types');
+
 /* our abstract stack type :D */
 module.exports = function() {
     var list = [];
@@ -10,6 +12,9 @@ module.exports = function() {
     };
 
     this.push = function (value) {
+        if (!value instanceof valueTypes.value) {
+            throw new Error("value should be a Value");
+        }
         list.push(value);
     };
 
