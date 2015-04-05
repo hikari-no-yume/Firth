@@ -5,6 +5,28 @@ var valueTypes = require('./value-types');
  * produces list of tokens
  */
 module.exports = function(script) {
+    var i = 0,
+        lasti = -1,
+        line = 1,
+        len = script.length,
+        tokens = [];
+
+    function tryAdvance() {
+        i++;
+        if (i < len) {
+            c = script[i];
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function advance() {
+        if (!tryAdvance()) {
+            throw new Error("Unexpected end of script: unterminated string");
+        }
+    }
+
     function isWhitespace(c) {
         return c === ' ' || c === '\n' || c === '\r' || c === '\t';
     }
@@ -20,12 +42,6 @@ module.exports = function(script) {
     function isIdentifierTrail(c) {
         return isIdentifierLead(c) || isDigit(c) || c === '-';
     }
-
-    var i = 0,
-        lasti = -1,
-        line = 1,
-        len = script.length,
-        tokens = [];
 
     while (i < len) {
         var c = script[i];
@@ -51,10 +67,7 @@ module.exports = function(script) {
         /* ; comment */
         if (c === ';') {
             while (c !== '\n') {
-                i++;
-                if (i < len) {
-                    c = script[i];
-                } else {
+                if (!tryAdvance()) {
                     break;
                 }
             }
@@ -82,21 +95,14 @@ module.exports = function(script) {
 
         /* /symbol */
         if (c === '/') {
-            i++;
-            if (!(i < len)) {
-                throw new Error("Unexpected EOF in symbol on line " + line);
-            }
-            c = script[i];
+            advance();
             if (!isIdentifierLead(c)) {
                 throw new Error("Unexpected '" + c + "' at start of symbol, underscore or letter expected on line " + line);
             }
             var symbol = '';
             while (isIdentifierTrail(c)) {
                 symbol += c;
-                i++;
-                if (i < len) {
-                    c = script[i];
-                } else {
+                if (!tryAdvance()) {
                     break;
                 }
             }
@@ -109,10 +115,7 @@ module.exports = function(script) {
             var token = '';
             while (isIdentifierTrail(c)) {
                 token += c;
-                i++;
-                if (i < len) {
-                    c = script[i];
-                } else {
+                if (!tryAdvance()) {
                     break;
                 }
             }
@@ -129,11 +132,8 @@ module.exports = function(script) {
             var digits = '';
             if (c === '-' || c === '+') {
                 digits += c;
-                i++;
-                if (!(i < len)) {
+                if (!tryAdvance()) {
                     throw new Error("Unexpected EOF in integer literal, expected digits on line " + line);
-                } else {
-                    c = script[i];
                 }
                 if (!isDigit(c)) {
                     throw new Error("Unexpected '" + c + "' following sign, expected digits on line " + line);
@@ -142,10 +142,7 @@ module.exports = function(script) {
 
             while (isDigit(c)) {
                 digits += c;
-                i++;
-                if (i < len) {
-                    c = script[i];
-                } else {
+                if (!tryAdvance()) {
                     break;
                 }
             }
@@ -158,19 +155,12 @@ module.exports = function(script) {
         if (c === "'") {
             var string = '';
 
-            i++;
-            if (!(i < len)) {
+            if (!tryAdvance()) {
                 throw new Error("Unexpected end of script: unterminated string");
-            } else {
-                c = script[i];
             }
-
             while (c !== "'") {
                 if (c === '\\') {
-                    i++;
-                    if (i < len) {
-                        c = script[i];
-                    } else {
+                    if (!tryAdvance()) {
                         throw new Error("Unexpected end of script: unterminated string");
                     }
                     if (c === '\\' || c === "'") {
@@ -185,10 +175,7 @@ module.exports = function(script) {
                 } else {
                     string += c;
                 }
-                i++;
-                if (i < len) {
-                    c = script[i];
-                } else {
+                if (!tryAdvance()) {
                     throw new Error("Unexpected end of script: unterminated string");
                 }
             }
