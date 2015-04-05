@@ -1,3 +1,5 @@
+var valueTypes = require('./value-types');
+
 /* our abstract stack type :D */
 module.exports = function() {
     var list = [];
