@@ -29,14 +29,14 @@ window.onload = function () {
         } catch (e) {
             alert('Error when lexing: ' + e.message);
         }
-        get('firth-tokens').value = tokens.map(function (token) { return JSON.stringify(token); }).join('\n');
+        get('firth-tokens').value = tokens.join('\n');
 
         try {
             var ast = Firth.parse(tokens);
         } catch (e) {
             alert('Error when parsing: ' + e.message);
         }
-        get('firth-ast').value = JSON.stringify(ast, null, 4);
+        get('firth-ast').value = ast.join('\n');
 
         try {
             Firth.execute(ast, new Firth.Stack(), Firth.stdlib);
