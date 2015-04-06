@@ -17,7 +17,7 @@ var Value = function Value(type, value) {
     }
 };
 
-var Symbol = function SymbolValue(value) {
+function SymbolValue(value) {
     var that = Value('symbol', value);
     that.toString = function() {
         return '/' + value;
@@ -26,7 +26,7 @@ var Symbol = function SymbolValue(value) {
 };
 
 
-var String = function StringValue(value) {
+function StringValue(value) {
     var that = Value('string', value);
     that.toString = function() {
         return '\'' + Array.prototype.map.call(value, function (c) {
@@ -45,7 +45,7 @@ var String = function StringValue(value) {
 };
 
 
-var Integer = function IntegerValue(value) {
+function IntegerValue(value) {
     if (typeof(value) === 'string') {
         value = parseInt(value, 10);
     }
@@ -64,29 +64,27 @@ var Integer = function IntegerValue(value) {
         return Math.sign(value - b.getValue());
     };
     that.add = function(b) {
-        return Integer(value + b.getValue());
+        return IntegerValue(value + b.getValue());
     };
     that.sub = function(b) {
-        return Integer(value - b.getValue());
+        return IntegerValue(value - b.getValue());
     };
     that.mul = function(b) {
-        return Integer(value * b.getValue());
+        return IntegerValue(value * b.getValue());
     };
     that.div = function(b) {
         /* floor division*/
-        return Integer(Math.floor(value / b.getValue()));
+        return IntegerValue(Math.floor(value / b.getValue()));
     };
     that.mod = function(b) {
         b = b.getValue();
         /* remainder with the sign of the divisor */
-        return Integer(((value % b) + b) % b);
+        return IntegerValue(((value % b) + b) % b);
     };
     return that;
 };
 
-
-
-var Boolean = function BooleanValue(value) {
+function BooleanValue(value) {
     if (typeof(value) === 'string') {
         if (value === 'true') {
             value = true;
@@ -103,16 +101,16 @@ var Boolean = function BooleanValue(value) {
         return value ? 'true' : 'false';
     }
     that.not = function () {
-        return Boolean(!value);
+        return BooleanValue(!value);
     };
     that.and = function (b) {
-        return Boolean(value && b.getValue());
+        return BooleanValue(value && b.getValue());
     };
     that.or = function (b) {
-        return Boolean(value || b.getValue());
+        return BooleanValue(value || b.getValue());
     };
     that.xor = function (b) {
-        return Boolean(!!(+value ^ +b.getValue()));
+        return BooleanValue(!!(+value ^ +b.getValue()));
     };
     return that;
 };
@@ -152,10 +150,10 @@ var InternalFunction = function InternalFunctionValue(callback, name) {
 
 
 module.exports = {
-    string: String,
-    integer: Integer,
+    string: StringValue,
+    integer: IntegerValue,
     'user-function': UserFunction,
     'internal-function': InternalFunction,
-    symbol: Symbol,
-    boolean: Boolean
+    symbol: SymbolValue,
+    boolean: BooleanValue
 };
