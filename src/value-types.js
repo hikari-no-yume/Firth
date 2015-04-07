@@ -81,6 +81,15 @@ function IntegerValue(value) {
         /* remainder with the sign of the divisor */
         return IntegerValue(((value % b) + b) % b);
     };
+    that.pow = function(b) {
+        if (b.getValue() < 0) {
+            throw new Error(b.getValue() + ' is negative');
+        }
+        return IntegerValue(Math.pow(value, b.getValue()));
+    };
+    that.sqrt = function() {
+        return IntegerValue(Math.sqrt(value));
+    };
     return that;
 };
 
@@ -149,11 +158,27 @@ var InternalFunction = function InternalFunctionValue(callback, name) {
 };
 
 
+
+var ObjectValue = function(name) {
+    if (name === undefined) {
+        throw new Error('Objects need a name');
+    }
+    var that = Value('object', name);
+    that.toString = function() {
+        return name;
+    };
+    that.data = {};
+    return that;
+}
+
+
+
 module.exports = {
     string: StringValue,
     integer: IntegerValue,
     'user-function': UserFunction,
     'internal-function': InternalFunction,
     symbol: SymbolValue,
-    boolean: BooleanValue
+    boolean: BooleanValue,
+    object: ObjectValue
 };

@@ -132,6 +132,12 @@ defunIntBinop('div', function (a, b) {
 defunIntBinop('mod', function (a, b) {
     return a.mod(b);
 });
+defunIntBinop('pow', function (a, b) {
+    return a.pow(b);
+});
+defunTyped('sqrt', ['integer'], ['integer'], function (stack, scope) {
+    stack.push(stack.pop().sqrt());
+});
 defunTyped('divmod', ['integer', 'integer'], ['integer', 'integer'], function (stack, scope) {
     var value2 = stack.pop();
     var value1 = stack.pop();
@@ -195,6 +201,86 @@ defunTyped('not', ['boolean'], ['boolean'], function (stack, scope) {
 });
 
 // Non-standard functions
+
+/* This function clones an object. Not sure if it belongs here, I will probably change this later.
+See: http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object */
+
+function clone(obj) {
+    var copy;
+
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Array
+    if (obj instanceof Array) {
+        copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+}
+
+defunTyped('show', ['any'], [], function (stack, scope) {
+    var value = stack.pop();
+
+    (typeof alert === 'undefined' ? console.log : alert)(value.toString());
+});
+
+defunTyped('get', ['symbol', 'object'], ['any'], function(stack, scope) {
+    var object = stack.pop();
+    var name = stack.pop().getValue();
+    
+    stack.push(object.data[name]);
+});
+
+defunTyped('set', ['any', 'symbol', 'object'], ['object'], function(stack, scope) {
+    var object = stack.pop();
+    var name = stack.pop().getValue();
+    var value = stack.pop();
+    
+    var newObject = clone(object);
+    newObject.data[name] = value;
+    
+    stack.push(newObject);
+});
+
+defunTyped('object', ['symbol', 'function'], ['symbol', 'object'], function (stack, scope) {
+    var fn = stack.pop();
+    var name = stack.pop();
+
+    var object = valueTypes.object(name.getValue());
+
+    /* not sure if I need to call the function and read all the stuff on the stack
+     * or actually loop over the opcodes.
+     */
+    for (i = 0; i < fn.getValue().length; ++i) {
+        var op = fn.getValue()[i];
+
+        if (op.getName() === 'push-value') {
+            if (op.getSource().toString().substring(0, 1) === '/') {
+                i++;
+
+                object.data[op.getSource().toString().substring(1)] = fn.getValue()[i].getSource();
+            }
+        }
+    }
+
+    /* repush the name so def can read it */
+    stack.push(name);
+    stack.push(object);
+});
 
 defunTyped('show', ['any'], [], function (stack, scope) {
     var value = stack.pop();
