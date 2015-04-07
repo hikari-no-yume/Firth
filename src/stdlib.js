@@ -136,7 +136,7 @@ defunIntBinop('pow', function (a, b) {
     return a.pow(b);
 });
 defunTyped('sqrt', ['integer'], ['integer'], function (stack, scope) {
-    stack.push(valueTypes.integer(Math.sqrt(stack.pop())));
+    stack.push(stack.pop().sqrt());
 });
 defunTyped('divmod', ['integer', 'integer'], ['integer', 'integer'], function (stack, scope) {
     var value2 = stack.pop();

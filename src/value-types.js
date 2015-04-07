@@ -87,6 +87,9 @@ function IntegerValue(value) {
         }
         return IntegerValue(Math.pow(value, b.getValue()));
     };
+    that.sqrt = function() {
+        return IntegerValue(Math.sqrt(value));
+    };
     return that;
 };
 
