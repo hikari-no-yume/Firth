@@ -81,6 +81,15 @@ function IntegerValue(value) {
         /* remainder with the sign of the divisor */
         return IntegerValue(((value % b) + b) % b);
     };
+    that.pow = function(b) {
+        if (b.getValue() < 0) {
+            throw new Error(b.getValue() + ' is negative');
+        }
+        return IntegerValue(Math.pow(value, b.getValue()));
+    };
+    that.sqrt = function() {
+        return IntegerValue(Math.sqrt(value));
+    };
     return that;
 };
 
