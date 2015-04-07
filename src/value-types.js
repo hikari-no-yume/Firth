@@ -82,6 +82,9 @@ function IntegerValue(value) {
         return IntegerValue(((value % b) + b) % b);
     };
     that.pow = function(b) {
+        if (b.getValue() < 0) {
+            throw new Error(value + ' is negative');
+        }
         return IntegerValue(Math.pow(value, b.getValue()));
     };
     return that;
