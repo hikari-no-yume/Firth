@@ -61,30 +61,28 @@ A Firth program source file whose sequence of tokens do not match this syntax MU
 Types
 -----
 
-A Firth value can have one of the following types. The name specified in `Monospace Text` is the name of the variable containing the `Type` value representing that type (see the "Basic types, functions and constants" section), while the name in brackets is its English language name. 
+A Firth value can have one of the following types.
 
-* `Type` (type) - a representation of a data type
-* `Any` (any) - the superclass of all types
-* `Int` (integer) - a signed integer of unbounded range (subject to available memory)
+* integer - a signed integer of unbounded range (subject to available memory)
 
   Integer values can be produced either with integer literals, or with basic Firth functions that produce integer values
-* `Bool` (boolean) - either the value `true` or the value `false`
+* boolean - either the value `true` or the value `false`
 
   The only source of Boolean values is the basic Firth constants `true` and `false`
-* `Str` (string) - a string of Unicode characters
+* string - a string of Unicode characters
 
   String values can be produced either with string literals, or with basic Firth functions that produce string values
-* `Sym` (symbol) - a symbol
+* symbol - a symbol
 
   Symbol values can be produced with symbol literals
-* `List` (list) - an ordered collection of elements indexed from zero
+* list - an ordered collection of elements indexed from zero
 
   List values can be produced with the basic Firth `list` function, which executes a function in a special temporary data stack, and produces a list containing the values the function produced in top-to-bottom order (the last value it produced being the first item in the list)
 
   Thus `[1 2 3] list.` results in a list with `3` as its first (0th) item, and `1` as its last (2nd) item
-* `Fn` (function) - a function
+* function - a function
 
-  Function values can be produced with function literals
+  Function values can be produced with function literals, and there are also certain pre-defined built-in Firth functions
 
 Execution
 ---------
