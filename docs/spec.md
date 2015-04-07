@@ -172,6 +172,7 @@ Type signatures MUST be strictly enforced by the implementation. Passing a funct
 * `mul` (`Int Int -> Int`) - multiplies two integer
 * `div` (`Int Int -> Int`) - divides two integers, producing the quotient (floored, i.e. rounded towards -Infinity)
 * `mod` (`Int Int -> Int`) - divides two integers, producing the remainder (with the sign of the divisor)
+* `pow` (`Int Int -> Int`) - the power of two integers
 * `divmod` (`Int Int -> Int Int`) - divides two integers, producing the quotient and remainder
 
 ####Comparison

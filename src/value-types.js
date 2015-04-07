@@ -81,6 +81,9 @@ function IntegerValue(value) {
         /* remainder with the sign of the divisor */
         return IntegerValue(((value % b) + b) % b);
     };
+    that.pow = function(b) {
+        return IntegerValue(Math.pow(value, b.getValue()));
+    };
     return that;
 };
 
