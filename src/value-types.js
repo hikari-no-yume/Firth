@@ -158,11 +158,27 @@ var InternalFunction = function InternalFunctionValue(callback, name) {
 };
 
 
+
+var ObjectValue = function(name) {
+    if (name === undefined) {
+        throw new Error('Objects need a name');
+    }
+    var that = Value('object', name);
+    that.toString = function() {
+        return name;
+    };
+    that.data = {};
+    return that;
+}
+
+
+
 module.exports = {
     string: StringValue,
     integer: IntegerValue,
     'user-function': UserFunction,
     'internal-function': InternalFunction,
     symbol: SymbolValue,
-    boolean: BooleanValue
+    boolean: BooleanValue,
+    object: ObjectValue
 };
