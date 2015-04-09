@@ -19,17 +19,24 @@ function typeCheck(name, consumes, produces, func) {
             }
         }
 
+        var produced = null;
+        if (typeof produces === "function") {
+            produced = produces(stack, scope);
+        } else {
+            produced = produces;
+        }
+
         func(stack, scope);
 
         var resultHeight = stack.getHeight(),
-            expectedHeight = initialHeight - consumes.length + produces.length,
+            expectedHeight = initialHeight - consumes.length + produced.length,
             diff = expectedHeight - resultHeight;
         if (diff) {
-            throw new Error(name + " should consume " + consumes.length + " arguments and produce " + produces.length + " results, stack is " + Math.abs(diff) + " values too " + (diff > 0 ? "low" : "high"));
+            throw new Error(name + " should consume " + consumes.length + " arguments and produce " + produced.length + " results, stack is " + Math.abs(diff) + " values too " + (diff > 0 ? "low" : "high"));
         }
-        for (var i = 0; i < produces.length; i++) {
-            var actualType = stack.peek(produces.length - 1 - i).getType(),
-                expectedType = produces[i];
+        for (var i = 0; i < produced.length; i++) {
+            var actualType = stack.peek(produced.length - 1 - i).getType(),
+                expectedType = produced[i];
             if (expectedType !== 'any' && actualType !== expectedType) {
                 throw new Error("Result " + (i + 1) + " of " + name + " should be of the type " + expectedType + ", " + actualType + " produced");
             }
@@ -73,6 +80,23 @@ defunTyped('swap', ['any', 'any'], ['any', 'any'], function (stack, scope) {
     var value2 = stack.pop();
     stack.push(value1);
     stack.push(value2);
+});
+defunTyped('copy', ['integer'], function (stack, scope) {
+    return Array.apply(null, new Array(stack.peek(0).getValue())).map(function () {
+        return 'any';
+    });
+}, function (stack, scope) {
+    var size = stack.pop();
+    if (size.getValue() > stack.getHeight()) {
+        throw new Error('Trying to copy ' + size.getValue() + ' elements while stack height is ' + stack.getHeight());
+    }
+    var copy = [];
+    for (i = 0; i < size.getValue(); ++i) {
+        copy.push(stack.peek(i));
+    }
+    for (i = copy.length - 1; i >= 0; --i) {
+        stack.push(copy[i]);
+    }
 });
 
 // Language Spec § Functions § Flow Control
