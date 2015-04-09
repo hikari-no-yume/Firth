@@ -84,7 +84,7 @@ defunTyped('copy', ['integer'], function (stack, scope) {
     });
 }, function (stack, scope) {
     var size = stack.pop();
-    if (size > stack.getHeight()) {
+    if (size.getValue() > stack.getHeight()) {
         throw new Error('Trying to copy ' + size.getValue() + ' elements while stack height is ' + stack.getHeight());
     }
     var copy = [];
