@@ -19,6 +19,10 @@ function typeCheck(name, consumes, produces, func) {
             }
         }
 
+        if (typeof produces === "function") {
+            produces = produces(stack, scope);
+        }
+
         func(stack, scope);
 
         var resultHeight = stack.getHeight(),
@@ -73,6 +77,23 @@ defunTyped('swap', ['any', 'any'], ['any', 'any'], function (stack, scope) {
     var value2 = stack.pop();
     stack.push(value1);
     stack.push(value2);
+});
+defunTyped('copy', ['integer'], function (stack, scope) {
+    return Array.apply(null, new Array(stack.peek(0).getValue())).map(function () {
+        return 'any';
+    });
+}, function (stack, scope) {
+    var size = stack.pop();
+    if (size > stack.getHeight()) {
+        throw new Error('Trying to copy ' + size.getValue() + ' elements while stack height is ' + stack.getHeight());
+    }
+    var copy = [];
+    for (i = 0; i < size.getValue(); ++i) {
+        copy.push(stack.peek(i));
+    }
+    for (i = copy.length - 1; i >= 0; --i) {
+        stack.push(copy[i]);
+    }
 });
 
 // Language Spec § Functions § Flow Control
